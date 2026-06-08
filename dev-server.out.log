@@ -1,0 +1,10 @@
+
+> codebox@0.1.0 dev
+> tsx server.ts
+
+Creating turbopack project {
+  dir: 'C:\\Users\\lalit\\OneDrive\\Desktop\\CodeNexus\\codebox',
+  testMode: true
+}
+> GFGCodeBox ready on http://localhost:3000
+○ Compiling /_not-found/page ...

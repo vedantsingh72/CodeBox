@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ProblemType {
+  STDIN
+}
+
+enum SubmissionStatus {
+  PENDING
+  RUNNING
+  ACCEPTED
+  WRONG_ANSWER
+  COMPILATION_ERROR
+  RUNTIME_ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  INTERNAL_ERROR
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  role      UserRole @default(USER)
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+
+  problems             Problem[]
+  contests             Contest[]             @relation("ContestCreator")
+  submissions          Submission[]
+  contestRegistrations ContestRegistration[]
+  contestAttempts      ContestAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Problem {
+  id          String      @id @default(uuid())
+  title       String
+  slug        String      @unique
+  description String
+  difficulty  Difficulty
+  tags        String[]
+  problemType ProblemType @default(STDIN)
+  isVisible   Boolean     @default(false)
+
+  constraints String
+  examples    Json
+
+  starterCode       Json
+  referenceSolution Json
+
+  publicTestCases Json
+  hiddenTestCases Json
+
+  timeLimit          Float    @default(2)
+  memoryLimit        Int      @default(128000)
+  supportedLanguages String[]
+
+  hints              String?
+  editorial          String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  contestProblems ContestProblem[]
+  submissions     Submission[]
+  contestAttempts ContestAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([problemType])
+  @@index([isVisible])
+}
+
+model Contest {
+  id          String  @id @default(uuid())
+  title       String
+  description String
+  isVisible   Boolean @default(false)
+
+  contestStartTime DateTime @map("startTime")
+  contestEndTime   DateTime @map("endTime")
+
+  createdById String
+  createdBy   User   @relation("ContestCreator", fields: [createdById], references: [id], onDelete: Cascade)
+
+  problems      ContestProblem[]
+  submissions   Submission[]
+  registrations ContestRegistration[]
+  attempts      ContestAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contestStartTime, contestEndTime])
+  @@index([isVisible])
+}
+
+model ContestRegistration {
+  id           String   @id @default(cuid())
+  userId       String
+  contestId    String
+  registeredAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contest Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contestId])
+  @@index([contestId])
+}
+
+model ContestProblem {
+  id            String @id @default(uuid())
+  contestId     String
+  problemId     String
+  order         Int    @default(0)
+  basePoints    Int    @default(100)
+  acceptedCount Int    @default(0)
+
+  contest Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([contestId, problemId])
+  @@index([contestId])
+  @@index([problemId])
+}
+
+model ContestAttempt {
+  id                String    @id @default(uuid())
+  userId            String
+  contestId         String
+  problemId         String
+  startedAt         DateTime  @default(now())
+  firstSubmissionAt DateTime?
+  solvedAt          DateTime?
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contest Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contestId, problemId])
+  @@index([contestId])
+  @@index([problemId])
+}
+
+model Submission {
+  id        String  @id @default(uuid())
+  userId    String
+  problemId String
+  contestId String?
+
+  language   String
+  sourceCode String @map("code")
+  verdict    SubmissionStatus @default(PENDING) @map("status")
+
+  runtime      Float?
+  memory       Int?
+  passedTests  Int   @default(0)
+  totalTests   Int   @default(0)
+  scoreAwarded Float @default(0)
+
+  submittedAt DateTime @default(now()) @map("createdAt")
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  contest Contest? @relation(fields: [contestId], references: [id], onDelete: SetNull)
+
+  @@index([userId, problemId])
+  @@index([contestId])
+  @@index([contestId, problemId])
+  @@index([verdict])
+  @@index([submittedAt])
+}
