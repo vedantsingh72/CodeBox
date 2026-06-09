@@ -13,8 +13,9 @@ FROM node:24-bookworm-slim AS builder
 
 WORKDIR /app
 
+ARG DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV DATABASE_URL=postgresql://postgres:postgres@postgres:5432/codebox
+ENV DATABASE_URL=$DATABASE_URL
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends openssl ca-certificates \

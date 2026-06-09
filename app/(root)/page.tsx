@@ -200,48 +200,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="problems" className="py-24">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Choose your <span className="text-primary">challenge</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              From beginner-friendly puzzles to advanced algorithmic challenges
-            </p>
-          </div>
+     
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {problemCategories.map((category, index) => (
-              <Card key={index} className="border-2 hover:shadow-lg transition-all">
-                <CardHeader>
-                  <Badge variant="secondary" className="w-fit">
-                    {category.level}
-                  </Badge>
-                  <CardTitle>{category.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>{category.description}</CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 bg-gradient-to-r from-primary/80 to-primary rounded-md mx-4">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary-foreground mb-6">
-            Ready to start your coding journey?
-          </h2>
-          <p className="text-xl text-primary-foreground/90 mb-8">
-            Join GFGCodeBox and improve your skills every day
-          </p>
-          <Button size="lg" className="bg-background text-foreground hover:bg-background/90 shadow-lg" asChild>
-            <Link href="/problems">Get Started for Free</Link>
-          </Button>
-        </div>
-      </section>
     </div>
   );
 }

@@ -6,39 +6,19 @@ services:
     env_file:
       - .env.docker
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/codebox
       REDIS_URL: redis://redis:6379
       HOSTNAME: 0.0.0.0
       PORT: 3000
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
-
-  postgres:
-    image: postgres:17-alpine
-    environment:
-      POSTGRES_DB: codebox
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d codebox"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
+    restart: unless-stopped
 
   redis:
     image: redis:8-alpine
     command: ["redis-server", "--appendonly", "yes"]
-    ports:
-      - "6379:6379"
     volumes:
       - redis-data:/data
     healthcheck:
@@ -46,7 +26,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+    restart: unless-stopped
 
 volumes:
-  postgres-data:
   redis-data:
