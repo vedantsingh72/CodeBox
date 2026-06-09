@@ -59,15 +59,15 @@ export default async function Home() {
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Global Community",
+      title: "College Community",
       description:
-        "Learn from developers worldwide and share your knowledge on GFGCodeBox.",
+        "Learn from developers from RGIPT and share your knowledge on GFGCodeBox.",
     },
     {
       icon: <Zap className="w-6 h-6" />,
       title: "Real-time Feedback",
       description:
-        "Get instant feedback on your solutions with detailed explanations.",
+        "Get instant feedback on your solutions.",
     },
   ];
 
