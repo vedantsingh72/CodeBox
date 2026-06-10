@@ -53,8 +53,8 @@ export function CreateContestForm() {
         body: JSON.stringify({
           title,
           description,
-          startTime,
-          endTime,
+          startTime: new Date(startTime).toISOString(),
+          endTime: new Date(endTime).toISOString(),
           problemIds: selectedIds,
           problemPoints,
           isVisible,
