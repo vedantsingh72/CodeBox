@@ -1,1 +1,1 @@
-### Deployed Link : http://3.92.152.170/
+### Deployed Link : https://gfgrgipt.space
